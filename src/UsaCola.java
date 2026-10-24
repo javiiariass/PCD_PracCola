@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 
-import cola.Cola;
+import cola.ColaLenta;
 import java.util.Random;
 
 /**
@@ -21,7 +21,7 @@ public class UsaCola {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Cola cola = new Cola(4);
+        ColaLenta cola = new ColaLenta(4);
         Random random = new Random();
 
         for (int i = 0; i < 10; i++) {

@@ -11,7 +11,7 @@ package cola;
  *
  * @author javi
  */
-public class Cola implements ICola {
+public class ColaLenta implements ICola {
 
     private int head;
     private int tail;
@@ -24,7 +24,7 @@ public class Cola implements ICola {
      *
      * @param capacidad Cantidad de elementos con que se inicializa el vector.
      */
-    public Cola(int capacidad) {
+    public ColaLenta(int capacidad) {
         head = 0;
         tail = 0;
         numElementos = 0;
@@ -52,28 +52,30 @@ public class Cola implements ICola {
      */
     @Override
     public void acola(Object elemento) throws Exception {
-
+        Thread.sleep(100);
+        
         if (colallena()) {
             throw new Exception("Error acolando: La cola está llena");
         }
-
+        
         datos[tail] = elemento;
         numElementos++;
         tail++;
         tail %= capacidad;
-
+        
     }
-
+    
     /**
      * Extrae el primer elemento de la cola si existe. Implementa desacola de
      * interface ICola.
-     *
-     * @return Elemento que se extrae.
-     * @throws java.lang.Exception Si la cola está vacía.
-     */
-    @Override
-    public Object desacola() throws Exception {
-
+    *
+    * @return Elemento que se extrae.
+    * @throws java.lang.Exception Si la cola está vacía.
+    */
+   @Override
+   public Object desacola() throws Exception {
+       Thread.sleep(100); 
+       
         if (colavacia()) {
             throw new Exception("Error desacolando: La cola está vacía");
         }
