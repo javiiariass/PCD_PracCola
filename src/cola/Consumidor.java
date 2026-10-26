@@ -8,7 +8,7 @@ package cola;
  *
  * @author javi
  */
-public class Consumidor implements Runnable {
+public class Consumidor extends Thread {
 
     private final ColaLenta lacola;
     private final String idHilo;

@@ -18,18 +18,19 @@ public class ColaLenta implements ICola {
     private final int capacidad;
     private int numElementos;
     private final Object[] datos;
-
+    private CanvasCola canvas;
     /**
      * Constructor de la clase. Inicializa la cola y los atributos de la clase.
      *
      * @param capacidad Cantidad de elementos con que se inicializa el vector.
      */
-    public ColaLenta(int capacidad) {
+    public ColaLenta(int capacidad, CanvasCola canvas) {
         head = 0;
         tail = 0;
         numElementos = 0;
         this.capacidad = capacidad;
         datos = new Object[capacidad];
+        this.canvas = canvas;
     }
 
     /**
@@ -51,10 +52,11 @@ public class ColaLenta implements ICola {
      * @throws java.lang.Exception Si la cola está llena.
      */
     @Override
-    public void acola(Object elemento) throws Exception {
+    public synchronized void acola(Object elemento) throws Exception {
         Thread.sleep(100);
         
         if (colallena()) {
+            canvas.avisa("COLA LLENA");
             throw new Exception("Error acolando: La cola está llena");
         }
         
@@ -62,6 +64,8 @@ public class ColaLenta implements ICola {
         numElementos++;
         tail++;
         tail %= capacidad;
+        
+        canvas.representa(head, tail, numElementos, datos);
         
     }
     
@@ -73,10 +77,11 @@ public class ColaLenta implements ICola {
     * @throws java.lang.Exception Si la cola está vacía.
     */
    @Override
-   public Object desacola() throws Exception {
+   public synchronized Object desacola() throws Exception {
        Thread.sleep(100); 
        
         if (colavacia()) {
+            canvas.avisa("COLA VACIA");
             throw new Exception("Error desacolando: La cola está vacía");
         }
 
@@ -87,6 +92,8 @@ public class ColaLenta implements ICola {
         head++;
         head %= capacidad;
 
+        canvas.representa(head, tail, numElementos, datos);
+        
         return objetoDesacola;
     }
 
@@ -100,6 +107,7 @@ public class ColaLenta implements ICola {
     @Override
     public Object primero() throws Exception {
         if (colavacia()) {
+            canvas.avisa("COLA VACIA");
             throw new Exception("Error obteniendo elemento: La cola está vacía");
         }
 

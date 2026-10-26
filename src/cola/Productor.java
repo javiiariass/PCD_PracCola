@@ -15,6 +15,7 @@ public class Productor extends Thread {
     Random random = new Random();
     private final ColaLenta lacola;
     private final String idHilo;
+    private final int NUM_PRODUCCIONES = 20;
 
     public Productor(String id, ColaLenta cola) {
         lacola = cola;
@@ -34,7 +35,7 @@ public class Productor extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < NUM_PRODUCCIONES; i++) {
             producir();
         }
     }
