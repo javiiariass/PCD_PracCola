@@ -19,6 +19,8 @@ public class ColaLenta implements ICola {
     private int numElementos;
     private final Object[] datos;
     private CanvasCola canvas;
+    private boolean terminado = false;
+
     /**
      * Constructor de la clase. Inicializa la cola y los atributos de la clase.
      *
@@ -54,35 +56,49 @@ public class ColaLenta implements ICola {
     @Override
     public synchronized void acola(Object elemento) throws Exception {
         Thread.sleep(100);
-        
-        if (colallena()) {
-            canvas.avisa("COLA LLENA");
-            throw new Exception("Error acolando: La cola está llena");
+        int contador = 0;
+
+        while (colallena()) {
+
+            if (terminado || contador == 3) {
+                canvas.avisa("COLA LLENA e intentos agotados");
+                throw new Exception("Error acolando: La cola sigue llena después de 3 intentos");
+            }
+            contador++;
+            canvas.avisa("COLA LLENA. Reintentando (" + contador + ")...");
+            wait();
         }
-        
+
         datos[tail] = elemento;
         numElementos++;
         tail++;
         tail %= capacidad;
-        
+
         canvas.representa(head, tail, numElementos, datos);
-        
+        notifyAll();    //con notify no sabemos si despierta a un productor o un consumidor
     }
-    
+
     /**
      * Extrae el primer elemento de la cola si existe. Implementa desacola de
      * interface ICola.
-    *
-    * @return Elemento que se extrae.
-    * @throws java.lang.Exception Si la cola está vacía.
-    */
-   @Override
-   public synchronized Object desacola() throws Exception {
-       Thread.sleep(100); 
-       
-        if (colavacia()) {
-            canvas.avisa("COLA VACIA");
-            throw new Exception("Error desacolando: La cola está vacía");
+     *
+     * @return Elemento que se extrae.
+     * @throws java.lang.Exception Si la cola está vacía.
+     */
+    @Override
+    public synchronized Object desacola() throws Exception {
+        Thread.sleep(100);
+        int contador = 0;
+
+        while (colavacia()) {
+
+            if (terminado || contador == 3) {
+                canvas.avisa("COLA VACIA e intentos agotados");
+                throw new Exception("Error desacolando: La cola sigue vacía después de 3 intentos");
+            }
+            contador++;
+            canvas.avisa("COLA VACIA. Reintentando (" + contador + ")...");
+            wait();
         }
 
         Object objetoDesacola;
@@ -93,7 +109,8 @@ public class ColaLenta implements ICola {
         head %= capacidad;
 
         canvas.representa(head, tail, numElementos, datos);
-        
+        notifyAll();
+
         return objetoDesacola;
     }
 
@@ -112,6 +129,12 @@ public class ColaLenta implements ICola {
         }
 
         return datos[head];
+    }
+
+    public synchronized void terminaCola() {
+        terminado = true;
+        notifyAll();
+
     }
 
     /**

@@ -66,20 +66,18 @@ public class ColaFrame extends java.awt.Frame {
         elframe.setVisible(true);
 
         // ************************************** Iniciar hilos  **************************************
-//        ColaLenta cola = new ColaLenta(10);
         ColaLenta cola = new ColaLenta(TAMANO_COLA, vista);
-        Random random = new Random();
 
         Productor[] productores = new Productor[NUMERO_PRODUCTORES];
-        Consumidor[] consumidores = new Consumidor[NUMERO_CONSUMIDORES];
-
+        Thread[] consumidores = new Thread[NUMERO_CONSUMIDORES];
         // creacion hilos
         for (int i = 0; i < NUMERO_PRODUCTORES; i++) {
             productores[i] = new Productor("P" + (i + 1), cola);
         }
 
         for (int i = 0; i < NUMERO_CONSUMIDORES; i++) {
-            consumidores[i] = new Consumidor("C" + (i + 1), cola);
+            consumidores[i] = new Thread(
+                    new Consumidor("C" + (i + 1), cola));
         }
 
         // lanzamiento hilos

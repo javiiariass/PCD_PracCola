@@ -10,8 +10,7 @@ import java.util.Random;
  *
  * @author javi
  */
-public class Consumidor extends Thread {
-
+public class Consumidor implements Runnable {
     Random random = new Random();
     private final ColaLenta lacola;
     private final String idHilo;
@@ -35,6 +34,7 @@ public class Consumidor extends Thread {
     @Override
     public void run() {
         int aleatorio;
+        Thread.currentThread().setName(idHilo);
         for (int i = 0; i < NUM_CONSUMICIONES; i++) {
             try {
                 aleatorio = random.nextInt(RANGO_ESPERA_SEGUNDOS[1])
@@ -45,6 +45,10 @@ public class Consumidor extends Thread {
             }
             consumir();
         }
+
+        // terminar la cola
+        lacola.terminaCola();
+
     }
 
 }

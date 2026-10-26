@@ -18,7 +18,7 @@ public class CanvasCola extends java.awt.Panel {
 
     private int head;
     private int tail;
-    private int capacidad = 5;
+    private int capacidad = 1;
     private int numElementos;
     private Object[] datos;
     private String mensaje = "";
@@ -61,7 +61,7 @@ public class CanvasCola extends java.awt.Panel {
 
     public void avisa(String mensaje) {
         this.mensaje = mensaje;
-        System.out.println("****" + mensaje + "****");
+        System.out.println("****" + Thread.currentThread().getName() +" desde CanvasCola: " + mensaje + "****");
         repaint();
     }
 
@@ -102,8 +102,6 @@ public class CanvasCola extends java.awt.Panel {
         Font fPunteros = new Font("Helvetica", Font.BOLD, 13);
         Font fAviso = new Font("Helvetica", Font.BOLD, 16);
 
-        // Capacidad obtenida directamente del array datos
-//        int capacidad = (datos != null && datos.length > 0) ? datos.length : 10;
         // Título y Contador
         og.setFont(fTitulo);
         og.setColor(Color.BLACK);
@@ -112,7 +110,7 @@ public class CanvasCola extends java.awt.Panel {
         og.setFont(fIndices);
         og.drawString("Elementos: " + numElementos + " / " + capacidad, 50, 68);
 
-        // Valores de Datod 
+        // Valores de Datos
         og.drawString("Head: " + head, 50, 88);
         og.drawString("tail: " + tail, 50, 108);
 
@@ -139,20 +137,23 @@ public class CanvasCola extends java.awt.Panel {
         for (int i = 0; i < capacidad; i++) {
             int x = xInicio + (i * anchoCelda);
 
-            // Casilla
-            boolean ocupada = (datos != null && i < datos.length && datos[i] != null);
+            // Casilla: comprobar si la posición i está dentro del rango lógico
+            // de la cola circular [head..head+numElementos), usando aritmética modular
+            boolean ocupada = false;
+            if ((datos != null && numElementos > 0)
+                    && ((i - head + capacidad) % capacidad < numElementos)) {   // para ver si la posicion está realmente dentro de la cola
+                ocupada = true;
+            }
             og.setColor(ocupada ? Color.WHITE : new Color(220, 220, 220));
             og.fillRect(x, yCola, anchoCelda, altoCelda);
             og.setColor(Color.BLACK);
             og.drawRect(x, yCola, anchoCelda, altoCelda);
 
             // Contenido
-            if (ocupada) {
+            if (ocupada){
                 og.setFont(fCeldas);
                 og.setColor(Color.BLUE);
-                String val = (datos[i] instanceof Number)
-                        ? String.format("%.1f", ((Number) datos[i]).doubleValue())
-                        : datos[i].toString();
+                String val = String.format("%.1f", datos[i]);
                 int txtW = og.getFontMetrics().stringWidth(val);
                 og.drawString(val, x + (anchoCelda - txtW) / 2, yCola + (altoCelda / 2) + 5);
             }

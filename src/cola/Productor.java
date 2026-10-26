@@ -21,6 +21,7 @@ public class Productor extends Thread {
     public Productor(String id, ColaLenta cola) {
         lacola = cola;
         idHilo = id;
+        this.setName(id);
     }
 
     public void producir() {
