@@ -13,6 +13,10 @@ import java.util.Random;
  */
 public class ColaFrame extends java.awt.Frame {
 
+    private static final int NUMERO_CONSUMIDORES = 1;
+    private static final int NUMERO_PRODUCTORES = 4;
+    private static final int TAMANO_COLA = 10;
+
     /**
      * Creates new form ColaFrame
      */
@@ -48,7 +52,7 @@ public class ColaFrame extends java.awt.Frame {
      * @param args the command line arguments
      */
     public static void main(String args[]) throws InterruptedException, IOException {
-        
+
         // ********************************* Iniciamos frame y canvas *********************************
         final int ancho = 1200, alto = 600;
 
@@ -61,47 +65,42 @@ public class ColaFrame extends java.awt.Frame {
 
         elframe.setVisible(true);
 
-        
         // ************************************** Iniciar hilos  **************************************
-        
 //        ColaLenta cola = new ColaLenta(10);
-        ColaLenta cola = new ColaLenta(15, vista);
+        ColaLenta cola = new ColaLenta(TAMANO_COLA, vista);
         Random random = new Random();
 
-        Productor prod = new Productor("P1", cola);
-        Consumidor consum = new Consumidor("C1", cola);
-        prod.start();
-        consum.start();
-        try {
-            prod.join();
-            consum.join();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Productor[] productores = new Productor[NUMERO_PRODUCTORES];
+        Consumidor[] consumidores = new Consumidor[NUMERO_CONSUMIDORES];
+
+        // creacion hilos
+        for (int i = 0; i < NUMERO_PRODUCTORES; i++) {
+            productores[i] = new Productor("P" + (i + 1), cola);
         }
 
-//        for (int i = 0; i < 2; i++) {
-//            consum = new Consumidor("C" + (i + 1), cola);
-//            hiloConsumidor[i] = new Thread(consum);
-//        }
-//
-//        for (int i = 0; i < 2; i++) {
-//            hiloConsumidor[i].start();
-//        }
-//
-//        for (int i = 0; i < 2; i++) {
-//            try {
-//                hiloConsumidor[i].join();
-//            } catch (InterruptedException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-        
+        for (int i = 0; i < NUMERO_CONSUMIDORES; i++) {
+            consumidores[i] = new Consumidor("C" + (i + 1), cola);
+        }
+
+        // lanzamiento hilos
+        for (int i = 0; i < NUMERO_PRODUCTORES; i++) {
+            productores[i].start();
+        }
+
+        for (int i = 0; i < NUMERO_CONSUMIDORES; i++) {
+            consumidores[i].start();
+        }
+
+        // esperar hilos
+        for (int i = 0; i < NUMERO_PRODUCTORES; i++) {
+            productores[i].join();
+        }
+
+        for (int i = 0; i < NUMERO_CONSUMIDORES; i++) {
+            consumidores[i].join();
+        }
 
         Thread.sleep(3000);
-        // TODO quitar para que finalice programa automaticamente
-        System.in.read();
         System.exit(0);
     }
 
