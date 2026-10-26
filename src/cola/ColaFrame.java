@@ -100,6 +100,7 @@ public class ColaFrame extends java.awt.Frame {
         
 
         Thread.sleep(3000);
+        // TODO quitar para que finalice programa automaticamente
         System.in.read();
         System.exit(0);
     }

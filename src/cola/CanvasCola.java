@@ -22,17 +22,17 @@ public class CanvasCola extends java.awt.Panel {
     private int numElementos;
     private Object[] datos;
     private String mensaje = "";
-    
+
     /**
      * Creates new form CanvasCola
      */
     public CanvasCola() {
         initComponents();
     }
-    
+
     public CanvasCola(int ancho, int alto) {
         setSize(new Dimension(ancho, alto));
-        this.setBackground(Color.cyan);
+        this.setBackground(Color.white);
         repaint();
     }
 
@@ -58,7 +58,7 @@ public class CanvasCola extends java.awt.Panel {
     public void update(Graphics g) {
         paint(g);
     }
-    
+
     public void avisa(String mensaje) {
         this.mensaje = mensaje;
         System.out.println("****" + mensaje + "****");
@@ -104,7 +104,6 @@ public class CanvasCola extends java.awt.Panel {
 
         // Capacidad obtenida directamente del array datos
 //        int capacidad = (datos != null && datos.length > 0) ? datos.length : 10;
-
         // Título y Contador
         og.setFont(fTitulo);
         og.setColor(Color.BLACK);
@@ -113,17 +112,27 @@ public class CanvasCola extends java.awt.Panel {
         og.setFont(fIndices);
         og.drawString("Elementos: " + numElementos + " / " + capacidad, 50, 68);
 
+        // Valores de Datod 
+        og.drawString("Head: " + head, 50, 88);
+        og.drawString("tail: " + tail, 50, 108);
+
         // Parámetros geométricos para centrar y adaptar la cola al ancho
         int margenX = 50;
         int espacioDisp = w - (2 * margenX);
         int anchoCelda = espacioDisp / capacidad;
-        if (anchoCelda > 80) anchoCelda = 80;
-        if (anchoCelda < 45) anchoCelda = 45;
+        if (anchoCelda > 80) {
+            anchoCelda = 80;
+        }
+        if (anchoCelda < 45) {
+            anchoCelda = 45;
+        }
 
         int altoCelda = 50;
         int anchoTotal = anchoCelda * capacidad;
         int xInicio = (w - anchoTotal) / 2;
-        if (xInicio < margenX) xInicio = margenX;
+        if (xInicio < margenX) {
+            xInicio = margenX;
+        }
         int yCola = (h / 2) - 25;
 
         // Dibujo de celdas
@@ -160,17 +169,13 @@ public class CanvasCola extends java.awt.Panel {
             boolean esHead = (i == head);
             boolean esTail = (i == tail);
 
-            if (esHead && esTail) {
-                og.setColor(Color.MAGENTA);
-                String tag = "H, T ↓";
-                int tagW = og.getFontMetrics().stringWidth(tag);
-                og.drawString(tag, x + (anchoCelda - tagW) / 2, yCola - 10);
-            } else if (esHead) {
+            if (esHead) {
                 og.setColor(new Color(0, 130, 0));
                 String tag = "HEAD ↓";
                 int tagW = og.getFontMetrics().stringWidth(tag);
                 og.drawString(tag, x + (anchoCelda - tagW) / 2, yCola - 10);
-            } else if (esTail) {
+            }
+            if (esTail) {
                 og.setColor(Color.RED);
                 String tag = "↑ TAIL";
                 int tagW = og.getFontMetrics().stringWidth(tag);

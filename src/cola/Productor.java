@@ -15,7 +15,7 @@ public class Productor extends Thread {
     Random random = new Random();
     private final ColaLenta lacola;
     private final String idHilo;
-    private final int NUM_PRODUCCIONES = 20;
+    private final int NUM_PRODUCCIONES = 30;
 
     public Productor(String id, ColaLenta cola) {
         lacola = cola;
