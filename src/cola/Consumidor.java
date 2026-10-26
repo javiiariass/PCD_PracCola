@@ -4,14 +4,19 @@
  */
 package cola;
 
+import java.util.Random;
+
 /**
  *
  * @author javi
  */
 public class Consumidor extends Thread {
 
+    Random random = new Random();
     private final ColaLenta lacola;
     private final String idHilo;
+    private final int NUM_CONSUMICIONES = 15;
+    private final int[] RANGO_ESPERA_SEGUNDOS = {1, 3};
 
     public Consumidor(String id, ColaLenta cola) {
         lacola = cola;
@@ -19,7 +24,6 @@ public class Consumidor extends Thread {
     }
 
     public void consumir() {
-
         try {
             float num_desacolado = (float) lacola.desacola();
             System.out.println("Hilo " + idHilo + ": consumido " + num_desacolado);
@@ -30,7 +34,15 @@ public class Consumidor extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 10; i++) {
+        int aleatorio;
+        for (int i = 0; i < NUM_CONSUMICIONES; i++) {
+            try {
+                aleatorio = random.nextInt(RANGO_ESPERA_SEGUNDOS[1])
+                        + RANGO_ESPERA_SEGUNDOS[0];
+                Thread.sleep(aleatorio * 1000);
+            } catch (InterruptedException ex) {
+                System.getLogger(Consumidor.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
             consumir();
         }
     }

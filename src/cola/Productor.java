@@ -15,7 +15,8 @@ public class Productor extends Thread {
     Random random = new Random();
     private final ColaLenta lacola;
     private final String idHilo;
-    private final int NUM_PRODUCCIONES = 30;
+    private final int NUM_PRODUCCIONES = 15;
+    private final int[] RANGO_ESPERA_SEGUNDOS = {1,3};
 
     public Productor(String id, ColaLenta cola) {
         lacola = cola;
@@ -35,7 +36,15 @@ public class Productor extends Thread {
 
     @Override
     public void run() {
+        int aleatorio;
         for (int i = 0; i < NUM_PRODUCCIONES; i++) {
+            try {
+                aleatorio = random.nextInt(RANGO_ESPERA_SEGUNDOS[1]) + 
+                        RANGO_ESPERA_SEGUNDOS[0];
+                Thread.sleep(aleatorio*1000);
+            } catch (InterruptedException ex) {
+                System.getLogger(Productor.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
             producir();
         }
     }
